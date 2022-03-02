@@ -1,0 +1,10 @@
+# Ignore built sif files
+*.sif
+
+# Ignore NEMO and XIOS folders
+nemo
+xios
+nemo-xios.zip
+
+# swap files
+*.swp
