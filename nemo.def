@@ -1,0 +1,66 @@
+Bootstrap: localimage
+From: /home/singularity/xios.sif
+
+####
+##
+## Authors:      Michael Wathen, Plymouth Marine Laboratory <miwa@pml.ac.uk>
+##
+## Definition file for building NEMO Singularity Containers
+##
+#####
+
+%files
+    /home/singularity/input_files/arch/nemo/arch-singularity.fcm /home/singularity/input_files/arch/nemo/arch-singularity.fcm
+    /home/singularity/input_files/arch/nemo/arch-singularity_debug.fcm /home/singularity/input_files/arch/nemo/arch-singularity_debug.fcm
+
+%post
+    cd /home/singularity/nemo
+    cp /home/singularity/input_files/arch/nemo/arch* ./arch
+
+    echo "Compiling nemo AMM7 Config"
+    ./makenemo -m singularity -r AMM7_FABM -j 8
+
+    mkdir /opt/nemo
+    mv /home/singularity/nemo/cfgs/AMM7_FABM/BLD/bin/nemo.exe /opt/nemo
+
+    rm -rf /home/singularity/xios
+    rm -rf /home/singularity/nemo
+    # The above didnt seem to work so blanket chmod for time being 
+    chmod -Rv 755 /opt
+
+    # Clean up
+    rm -rf /var/lib/apt/lists/* /var/lib/dpkg/info/*
+
+%environment
+    
+    export LD_LIBRARY_PATH=/opt/hdf5/install/lib:$LD_LIBRARY_PATH
+
+%runscript
+    #!/bin/bash
+
+    # This runscript will take 2 arguments: program to run (NEMO or XIOS), and an 
+    # output directory. By default, the output directory will be the job id 
+    # (passed using $SLURM_JOB_ID).    
+
+    if ! [[ $1 == "nemo" || $1 == "xios" ]]    
+    then
+      echo "The program argument should be either 'nemo' or 'xios'"
+      exit 1
+    fi
+
+    if [[ $1 == 'nemo' ]]
+    then
+        /opt/nemo/nemo.exe
+    else
+        /opt/xios/xios_server.exe
+    fi
+
+%labels
+    Author miwa@pml.ac.uk
+
+%help
+    The definition file used to build XIOS:
+
+    To build the container, run
+
+        singularity build nemo.sif nemo.def

@@ -1,0 +1,49 @@
+Bootstrap: localimage
+From: /home/singularity/base_container/baseOS.sif
+
+####
+##
+## Authors:      Michael Wathen, Plymouth Marine Laboratory <miwa@pml.ac.uk>
+##
+## Definition file for building FABM-ERSEM Singularity Container
+##
+#####
+
+%post
+    apt update
+    apt install -y zip \
+                   cmake \
+                   g++
+
+    PATH=$PATH:/opt/mpi/install/bin:/opt/hdf5/install/bin
+    LD_LIBRARY_PATH=/opt/hdf5/install/lib:$LD_LIBRARY_PATH
+
+
+    cd /home/singularity
+    git clone https://github.com/pmlmodelling/ersem.git ersem
+    git clone https://github.com/fabm-model/fabm.git fabm
+
+    export ERSEM_DIR=/home/singularity/ersem
+    export FABM_DIR=/home/singularity/fabm
+    export FABM_INSTALL=/home/singularity/fabm-gcc
+
+    mkdir $FABM_INSTALL
+    cd $FABM_INSTALL
+    cmake $FABM_DIR/src -DFABM_HOST=nemo -DCMAKE_Fortran_COMPILER=mpif90 -DFABM_ERSEM_BASE=$ERSEM_DIR -DFABM_EMBED_VERSION=ON -DCMAKE_INSTALL_PREFIX=$FABM_INSTALL -DCMAKE_Fortran_FLAGS:STRING="-fdefault-real-8 -O3 -funroll-all-loops -fcray-pointer -cpp -ffree-line-length-none" #-DCMAKE_BUILD_TYPE=debug
+    make
+    make install -j8
+
+%environment
+    
+    export LD_LIBRARY_PATH=/opt/hdf5/install/lib:/home/singularity/fabm-gcc:$LD_LIBRARY_PATH
+
+
+%labels
+    Author miwa@pml.ac.uk
+
+%help
+    The definition file used to build FABM-ERSEM:
+
+    To build the container, run
+
+        singularity build fabm.sif fabm.def

@@ -1,0 +1,2 @@
+MPI=OMPI                       # Which MPI implementation to use MPICH | OMPI
+                               # If empty and using GH actions, both will be built

@@ -1,0 +1,63 @@
+Bootstrap: localimage
+From: /home/singularity/fabm.sif
+
+####
+##
+## Authors:      Michael Wathen, Plymouth Marine Laboratory <miwa@pml.ac.uk>
+##
+## Definition file for building XIOS Singularity Containers
+##
+#####
+
+%files
+    /home/singularity/input_files/arch/xios/arch-singularity.fcm /home/singularity/input_files/arch/xios/arch-singularity.fcm
+    /home/singularity/input_files/arch/xios/arch-singularity.env /home/singularity/input_files/arch/xios/arch-singularity.env
+    /home/singularity/input_files/arch/xios/arch-singularity.path /home/singularity/input_files/arch/xios/arch-singularity.path
+    /home/singularity/nemo-xios.zip /home/singularity/nemo-xios.zip
+
+%post
+    cd /home/singularity
+    unzip nemo-xios.zip
+    rm -rf /home/singularity/nemo-xios.zip
+    
+    PATH=$PATH:/opt/mpi/install/bin:/opt/hdf5/install/bin
+    LD_LIBRARY_PATH=/opt/hdf5/install/lib:$LD_LIBRARY_PATH
+
+    cd /home/singularity/xios
+    cp /home/singularity/input_files/arch/xios/arch* ./arch
+
+    echo "Compiling xios"
+    ./make_xios --full --prod --arch singularity --netcdf_lib netcdf4_par -j 8
+    
+    mkdir /opt/xios
+    mv /home/singularity/xios/bin/xios_server.exe /opt/xios
+
+%environment
+    
+    export XIOS_DIR=/home/singularity/xios
+    export XIOS_HOME=$XIOS_DIR
+
+%runscript
+    #!/bin/bash
+
+    # This runscript will take 2 arguments: program to run (NEMO or XIOS), and an 
+    # output directory. By default, the output directory will be the job id 
+    # (passed using $SLURM_JOB_ID).    
+
+    if ! [[ $1 == "xios" ]]    
+    then
+      echo "The program argument should be either 'nemo' or 'xios'"
+      exit 1
+    fi
+    
+    /opt/xios/xios_server.exe
+
+%labels
+    Author miwa@pml.ac.uk
+
+%help
+    The definition file used to build XIOS:
+
+    To build the container, run
+
+        singularity build xios.sif xios.def
