@@ -10,12 +10,11 @@ From: /home/singularity/xios.sif
 #####
 
 %files
-    /home/singularity/input_files/arch/nemo/arch-singularity.fcm /home/singularity/input_files/arch/nemo/arch-singularity.fcm
-    /home/singularity/input_files/arch/nemo/arch-singularity_debug.fcm /home/singularity/input_files/arch/nemo/arch-singularity_debug.fcm
+    /home/singularity/input_files/arch/nemo-arch/arch-singularity.fcm /home/singularity/input_files/arch/nemo-arch/arch-singularity.fcm
 
 %post
     cd /home/singularity/nemo
-    cp /home/singularity/input_files/arch/nemo/arch* ./arch
+    cp /home/singularity/input_files/arch/nemo-arch/* /home/singularity/nemo/arch/PML
 
     echo "Compiling nemo AMM7 Config"
     ./makenemo -m singularity -r AMM7_FABM -j 8

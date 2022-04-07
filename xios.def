@@ -10,9 +10,9 @@ From: /home/singularity/fabm.sif
 #####
 
 %files
-    /home/singularity/input_files/arch/xios/arch-singularity.fcm /home/singularity/input_files/arch/xios/arch-singularity.fcm
-    /home/singularity/input_files/arch/xios/arch-singularity.env /home/singularity/input_files/arch/xios/arch-singularity.env
-    /home/singularity/input_files/arch/xios/arch-singularity.path /home/singularity/input_files/arch/xios/arch-singularity.path
+    /home/singularity/input_files/arch/xios-arch/arch-singularity.fcm /home/singularity/input_files/arch/xios-arch/arch-singularity.fcm
+    /home/singularity/input_files/arch/xios-arch/arch-singularity.env /home/singularity/input_files/arch/xios-arch/arch-singularity.env
+    /home/singularity/input_files/arch/xios-arch/arch-singularity.path /home/singularity/input_files/arch/xios-arch/arch-singularity.path
     /home/singularity/nemo-xios.zip /home/singularity/nemo-xios.zip
 
 %post
@@ -24,7 +24,7 @@ From: /home/singularity/fabm.sif
     LD_LIBRARY_PATH=/opt/hdf5/install/lib:$LD_LIBRARY_PATH
 
     cd /home/singularity/xios
-    cp /home/singularity/input_files/arch/xios/arch* ./arch
+    cp /home/singularity/input_files/arch/xios-arch/arch* ./arch
 
     echo "Compiling xios"
     ./make_xios --full --prod --arch singularity --netcdf_lib netcdf4_par -j 8
