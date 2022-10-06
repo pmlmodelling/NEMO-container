@@ -13,6 +13,8 @@ From: /home/singularity/xios.sif
     /home/singularity/input_files/arch/nemo-arch/arch-singularity.fcm /home/singularity/input_files/arch/nemo-arch/arch-singularity.fcm
 
 %post
+    cd /home/singularity
+    git clone https://github.com/pmlmodelling/NEMO4.0-FABM.git nemo
     cd /home/singularity/nemo
     cp /home/singularity/input_files/arch/nemo-arch/* /home/singularity/nemo/arch/PML
 

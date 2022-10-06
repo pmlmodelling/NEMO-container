@@ -13,12 +13,11 @@ From: /home/singularity/fabm.sif
     /home/singularity/input_files/arch/xios-arch/arch-singularity.fcm /home/singularity/input_files/arch/xios-arch/arch-singularity.fcm
     /home/singularity/input_files/arch/xios-arch/arch-singularity.env /home/singularity/input_files/arch/xios-arch/arch-singularity.env
     /home/singularity/input_files/arch/xios-arch/arch-singularity.path /home/singularity/input_files/arch/xios-arch/arch-singularity.path
-    /home/singularity/nemo-xios.zip /home/singularity/nemo-xios.zip
 
 %post
     cd /home/singularity
-    unzip nemo-xios.zip
-    rm -rf /home/singularity/nemo-xios.zip
+    apt-get install subversion
+    svn checkout http://forge.ipsl.jussieu.fr/ioserver/svn/XIOS/branchs/xios-2.5 xios
     
     PATH=$PATH:/opt/mpi/install/bin:/opt/hdf5/install/bin
     LD_LIBRARY_PATH=/opt/hdf5/install/lib:$LD_LIBRARY_PATH
