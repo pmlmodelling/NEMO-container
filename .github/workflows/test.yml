@@ -1,0 +1,21 @@
+name: singularity-deploy-test
+
+on:  
+  pull_request: []
+
+jobs:
+  release:
+    name: Test Container Builds
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - uses: eWaterCycle/setup-singularity@v7
+        with:
+          singularity-version: 3.8.3
+      - name: Build singularity container
+        run: |
+            singularity build --fakeroot base_container/baseOS.sif base_container/baseOS.def
+            singularity build --fakeroot fabm.sif fabm.def
+            singularity build --fakeroot xios.sif xios.def
+            singularity build --fakeroot nemo.sif nemo.def

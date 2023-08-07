@@ -32,8 +32,8 @@
 #
 %NCDF_HOME           /opt/netcdf/install
 %HDF5_HOME           /opt/hdf5/install
-%XIOS_HOME           /home/singularity/xios
-%FABM_HOME           /home/singularity/fabm-gcc
+%XIOS_HOME           /xios
+%FABM_HOME           /fabm-gcc
 
 %NCDF_INC            -I%NCDF_HOME/include -I%HDF5_HOME/include
 %NCDF_LIB            -L%HDF5_HOME/lib -L%NCDF_HOME/lib -lnetcdff -lnetcdf -lhdf5_hl -lhdf5 -lcurl -lz
@@ -42,7 +42,7 @@
 %FABM_INC            -I%FABM_HOME/include
 %FABM_LIB            -L%FABM_HOME/lib -lfabm
 
-%CPP                 cpp -Dkey_nosignedzero -P -traditional -I/home/singularity/fabm-gcc/include
+%CPP                 cpp -Dkey_nosignedzero -P -traditional -I/fabm-gcc/include
 %FC                  /opt/mpi/install/bin/mpif90
 %FCFLAGS             -fdefault-double-8 -fdefault-real-8 -O1 -funroll-all-loops -fcray-pointer -ffree-line-length-none -w -fallow-argument-mismatch
 %FFLAGS              -fdefault-double-8 -fdefault-real-8 -O1 -funroll-all-loops -fcray-pointer -ffree-line-length-none -w -fallow-argument-mismatch
