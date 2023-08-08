@@ -35,25 +35,29 @@ jobs:
           release_name: Release ${{ env.release_tag }}
           draft: false
           prerelease: false
-
       - uses: eWaterCycle/setup-singularity@v7
         if: ${{ env.release_tag != env.latest_tag }}
         with:
           singularity-version: 3.8.3
-      - name: Build the MPICH singularity container
+      - name: Build singularity container
         if: ${{ env.release_tag != env.latest_tag }}
         run: |
             repo=$(echo "${GITHUB_REPOSITORY/\//-}")
-            singularity build base_container/baseOS.sif base_container/baseOS.def
-            singularity build fabm.sif fabm.def
-            singularity build xios.sif xios.def
-            singularity build nemo.sif nemo.def
-
-#      - name: Upload Release Assets
-#        if: ${{ env.release_tag != env.latest_tag }}
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          upload_url: ${{ steps.create_release.outputs.upload_url }}
-#          tag_name: ${{ env.release_tag }}
-#        run: |
-#          hub release edit $(find . -type f -name "*.sif" -printf "-a %p ") -m "" "$tag_name"
+            singularity build --fakeroot base_container/baseOS.sif base_container/baseOS.def
+            singularity build --fakeroot fabm.sif fabm.def
+            singularity build --fakeroot xios.sif xios.def
+            singularity build --fakeroot nemo.sif nemo.def
+            if [ "$?" == "0" ]; then
+                echo "Successfully built container $container."
+                mv nemo.sif "$container"
+            else
+                echo "There was an issue building $container."
+            fi
+      - name: Upload Release Assets
+        if: ${{ env.release_tag != env.latest_tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          tag_name: ${{ env.release_tag }}
+        run: |
+          hub release edit $(find . -type f -name "*.sif" -printf "-a %p ") -m "" "$tag_name" 
