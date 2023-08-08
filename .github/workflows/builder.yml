@@ -47,6 +47,8 @@ jobs:
             singularity build --fakeroot fabm.sif fabm.def
             singularity build --fakeroot xios.sif xios.def
             singularity build --fakeroot nemo.sif nemo.def
+            container="$repo:$tag.sif"
+
             if [ "$?" == "0" ]; then
                 echo "Successfully built container $container."
                 mv nemo.sif "$container"
