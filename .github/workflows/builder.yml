@@ -40,7 +40,6 @@ jobs:
         with:
           singularity-version: 3.8.3
       - name: Build singularity container
-        if: ${{ env.release_tag != env.latest_tag }}
         run: |
             repo=$(echo "${GITHUB_REPOSITORY/\//-}")
             singularity build --fakeroot base_container/baseOS.sif base_container/baseOS.def
