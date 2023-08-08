@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: /home/singularity/fabm.sif
+From: fabm.sif
 
 ####
 ##
@@ -10,30 +10,29 @@ From: /home/singularity/fabm.sif
 #####
 
 %files
-    /home/singularity/input_files/arch/xios-arch/arch-singularity.fcm /home/singularity/input_files/arch/xios-arch/arch-singularity.fcm
-    /home/singularity/input_files/arch/xios-arch/arch-singularity.env /home/singularity/input_files/arch/xios-arch/arch-singularity.env
-    /home/singularity/input_files/arch/xios-arch/arch-singularity.path /home/singularity/input_files/arch/xios-arch/arch-singularity.path
+    input_files/arch/xios-arch/arch-singularity.fcm input_files/arch/xios-arch/arch-singularity.fcm
+    input_files/arch/xios-arch/arch-singularity.env input_files/arch/xios-arch/arch-singularity.env
+    input_files/arch/xios-arch/arch-singularity.path input_files/arch/xios-arch/arch-singularity.path
 
 %post
-    cd /home/singularity
     apt-get install subversion
     svn checkout http://forge.ipsl.jussieu.fr/ioserver/svn/XIOS/branchs/xios-2.5 xios
     
     PATH=$PATH:/opt/mpi/install/bin:/opt/hdf5/install/bin
     LD_LIBRARY_PATH=/opt/hdf5/install/lib:$LD_LIBRARY_PATH
 
-    cd /home/singularity/xios
-    cp /home/singularity/input_files/arch/xios-arch/arch* ./arch
+    cd xios
+    cp /input_files/arch/xios-arch/arch* ./arch
 
     echo "Compiling xios"
     ./make_xios --full --prod --arch singularity --netcdf_lib netcdf4_par -j 8
     
     mkdir /opt/xios
-    mv /home/singularity/xios/bin/xios_server.exe /opt/xios
+    mv /xios/bin/xios_server.exe /opt/xios
 
 %environment
     
-    export XIOS_DIR=/home/singularity/xios
+    export XIOS_DIR=xios
     export XIOS_HOME=$XIOS_DIR
 
 %runscript

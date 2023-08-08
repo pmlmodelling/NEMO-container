@@ -1,0 +1,63 @@
+name: singularity-deploy
+
+on:
+  push:
+    branches:
+      - "main"
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Get Latest Tag
+        run: |
+            # Get the latest tag, we won't build if it's the current
+            git fetch --tags
+            latest_tag=$(git tag | tail -1)
+            echo "latest_tag=$latest_tag" >> $GITHUB_ENV
+
+      - name: Define Repository Name and Release Version
+        run: |
+            repo=$(echo "${GITHUB_REPOSITORY/\//-}")
+            release=$(cat VERSION)
+            echo "reponame=$repo" >> $GITHUB_ENV
+            echo "release_tag=$release" >> $GITHUB_ENV
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        if: ${{ env.release_tag != env.latest_tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.release_tag }}
+          release_name: Release ${{ env.release_tag }}
+          draft: false
+          prerelease: false
+      - uses: eWaterCycle/setup-singularity@v7
+        if: ${{ env.release_tag != env.latest_tag }}
+        with:
+          singularity-version: 3.8.3
+      - name: Build singularity container
+        if: ${{ env.release_tag != env.latest_tag }}
+        run: |
+            repo=$(echo "${GITHUB_REPOSITORY/\//-}")
+            singularity build --fakeroot base_container/baseOS.sif base_container/baseOS.def
+            singularity build --fakeroot fabm.sif fabm.def
+            singularity build --fakeroot xios.sif xios.def
+            singularity build --fakeroot nemo.sif nemo.def
+            if [ "$?" == "0" ]; then
+                echo "Successfully built container $container."
+                mv nemo.sif "$container"
+            else
+                echo "There was an issue building $container."
+            fi
+      - name: Upload Release Assets
+        if: ${{ env.release_tag != env.latest_tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          tag_name: ${{ env.release_tag }}
+        run: |
+          hub release edit $(find . -type f -name "*.sif" -printf "-a %p ") -m "" "$tag_name" 

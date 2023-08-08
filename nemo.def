@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: /home/singularity/xios.sif
+From: xios.sif
 
 ####
 ##
@@ -10,22 +10,21 @@ From: /home/singularity/xios.sif
 #####
 
 %files
-    /home/singularity/input_files/arch/nemo-arch/arch-singularity.fcm /home/singularity/input_files/arch/nemo-arch/arch-singularity.fcm
+    input_files/arch/nemo-arch/arch-singularity.fcm input_files/arch/nemo-arch/arch-singularity.fcm
 
 %post
-    cd /home/singularity
     git clone https://github.com/pmlmodelling/NEMO4.0-FABM.git nemo
-    cd /home/singularity/nemo
-    cp /home/singularity/input_files/arch/nemo-arch/* /home/singularity/nemo/arch/PML
+    cd nemo
+    cp /input_files/arch/nemo-arch/* /nemo/arch/PML
 
     echo "Compiling nemo AMM7 Config"
     ./makenemo -m singularity -r AMM7_FABM -j 8
 
     mkdir /opt/nemo
-    mv /home/singularity/nemo/cfgs/AMM7_FABM/BLD/bin/nemo.exe /opt/nemo
+    mv /nemo/cfgs/AMM7_FABM/BLD/bin/nemo.exe /opt/nemo
 
-    rm -rf /home/singularity/xios
-    rm -rf /home/singularity/nemo
+    rm -rf xios
+    rm -rf nemo
     # The above didnt seem to work so blanket chmod for time being 
     chmod -Rv 755 /opt
 

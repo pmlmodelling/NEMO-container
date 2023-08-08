@@ -14,7 +14,7 @@ From: ubuntu:20.04
 
 %files
 
-    /home/singularity/input_files/NEMO_in /home/singularity/input_files/NEMO_in
+    input_files/NEMO_in input_files/NEMO_in
 
 %post
 
@@ -82,7 +82,7 @@ From: ubuntu:20.04
     # compiling MPI
     ##
 
-    . /home/singularity/input_files/NEMO_in # set MPI choices
+    . input_files/NEMO_in # set MPI choices
     MPI=MPICH
     if [ -z "$MPI" ] && [ "$MPI_SWAP" = "MPICH" ]
     then
@@ -109,8 +109,8 @@ From: ubuntu:20.04
 
         #./configure CC=gcc CXX=g++ FC=gfortran --prefix=/opt/mpi/install FFLAGS=-fallow-argument-mismatch
         ./configure CC=gcc CXX=g++ FC=gfortran --prefix=/opt/mpi/install FFLAGS=-fallow-argument-mismatch
-        make
-        make install
+        make -j 8
+        make -j 8  install
 
     elif [ "$MPI" = "OMPI" ]
     then
@@ -134,8 +134,8 @@ From: ubuntu:20.04
         
         #./configure CC=gcc CXX=g++ FC=gfortran --enable-mpi1-compatibility --prefix=/opt/mpi/install --with-verbs --with-slurm --with-pmix --with-ucx=/opt/ucx/install
         ./configure CC=gcc CXX=g++ FC=gfortran --enable-mpi1-compatibility --prefix=/opt/mpi/install --with-verbs --with-slurm --with-pmix
-        make
-        make install
+        make -j 8
+        make -j 8 install
     else
        echo "No MPI implementation specified"
        exit 1
@@ -160,8 +160,8 @@ From: ubuntu:20.04
     cd hdf
 
     CC=/opt/mpi/install/bin/mpicc ./configure --prefix=${H5DIR} --enable-hl --enable-parallel --with-default-api-version=v18
-    make
-    make install
+    make -j 8
+    make -j 8 install
     cd .. 
     rm -r hdf # removes the 212 mb directory
 
@@ -183,8 +183,8 @@ From: ubuntu:20.04
     NCDIR=/opt/netcdf/install
     
     CC=/opt/mpi/install/bin/mpicc FC=/opt/mpi/install/bin/mpifort CPPFLAGS="-I${H5DIR}/include" LDFLAGS="-L${H5DIR}/lib" ./configure --disable-shared --prefix=$NCDIR
-    make
-    make install
+    make -j 8
+    make -j 8 install
     cd .. 
     rm -r netcdf # removes the 125 mb directory
 
@@ -197,8 +197,8 @@ From: ubuntu:20.04
     NFDIR=/opt/netcdf/install
     
     CC=/opt/mpi/install/bin/mpicc FC=/opt/mpi/install/bin/mpifort CPPFLAGS="-I${NCDIR}/include -I${H5DIR}/include" LDFLAGS="-L${NCDIR}/lib -L${H5DIR}/lib" LIBS="-lhdf5 -lhdf5_hl -lcurl" ./configure --prefix=$NFDIR --disable-shared
-    make
-    make install
+    make -j 8
+    make -j 8 install
     cd ..
     rm -r netcdf # removes the 18 mb directory
 

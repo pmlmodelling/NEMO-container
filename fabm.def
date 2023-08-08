@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: /home/singularity/base_container/baseOS.sif
+From: base_container/baseOS.sif
 
 ####
 ##
@@ -18,14 +18,12 @@ From: /home/singularity/base_container/baseOS.sif
     PATH=$PATH:/opt/mpi/install/bin:/opt/hdf5/install/bin
     LD_LIBRARY_PATH=/opt/hdf5/install/lib:$LD_LIBRARY_PATH
 
-
-    cd /home/singularity
     git clone https://github.com/pmlmodelling/ersem.git ersem
     git clone https://github.com/fabm-model/fabm.git fabm
 
-    export ERSEM_DIR=/home/singularity/ersem
-    export FABM_DIR=/home/singularity/fabm
-    export FABM_INSTALL=/home/singularity/fabm-gcc
+    export ERSEM_DIR=/ersem
+    export FABM_DIR=/fabm
+    export FABM_INSTALL=/fabm-gcc
 
     mkdir $FABM_INSTALL
     cd $FABM_INSTALL
@@ -35,7 +33,7 @@ From: /home/singularity/base_container/baseOS.sif
 
 %environment
     
-    export LD_LIBRARY_PATH=/opt/hdf5/install/lib:/home/singularity/fabm-gcc:$LD_LIBRARY_PATH
+    export LD_LIBRARY_PATH=/opt/hdf5/install/lib:fabm-gcc:$LD_LIBRARY_PATH
 
 
 %labels
