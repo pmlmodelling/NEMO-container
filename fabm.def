@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: base_container/baseOS.sif
+From: fabm.sif
 
 ####
 ##
@@ -10,10 +10,6 @@ From: base_container/baseOS.sif
 #####
 
 %post
-    apt update
-    apt install -y zip \
-                   cmake \
-                   g++
 
     PATH=$PATH:/opt/mpi/install/bin:/opt/hdf5/install/bin
     LD_LIBRARY_PATH=/opt/hdf5/install/lib:$LD_LIBRARY_PATH
