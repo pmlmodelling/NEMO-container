@@ -50,10 +50,7 @@ From: ubuntu:20.04
                    libibverbs-dev \
                    libpmix-dev \
                    libslurm-dev \
-                   libnuma-dev \
-                   zip \
-                   cmake \
-                   g++
+                   libnuma-dev 
 
     ##
     # make gcc-10 available
