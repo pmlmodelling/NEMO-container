@@ -41,9 +41,6 @@ jobs:
       - name: Build singularity container
         run: |
             repo=$(echo "${GITHUB_REPOSITORY/\//-}")
-            singularity build --fakeroot base_container/baseOS.sif base_container/baseOS.def
-            singularity build --fakeroot fabm.sif fabm.def
-            singularity build --fakeroot xios.sif xios.def
             singularity build --fakeroot nemo.sif nemo.def
             container="$repo:$tag.sif"
 
