@@ -10,7 +10,6 @@ From: xios.sif
 #####
 
 %post
-
     apt update
     apt install -y zip \
                    cmake \
