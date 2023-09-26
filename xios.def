@@ -1,5 +1,5 @@
 Bootstrap: localimage
-from: base_container/baseos.sif
+From: base_container/baseOS.sif
 
 ####
 ##
